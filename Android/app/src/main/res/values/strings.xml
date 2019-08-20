@@ -13,4 +13,14 @@
     <string name="menu_nav_profiles">Профиль</string>
     <string name="menu_nav_settings">Настройки</string>
     <string name="menu_nav_search">Поиск</string>
+
+    <!-- fragment task -->
+    <string name="fragment_task_title">Заголовок</string>
+    <string name="fragment_task_description">Описание</string>
+
+    <!-- menu task list -->
+    <string name="menu_task_list_create">Создать задание</string>
+    <string name="menu_task_list_category">Виды заданий</string>
+    <string name="menu_task_list_search">Поиск заданий</string>
+
 </resources>
