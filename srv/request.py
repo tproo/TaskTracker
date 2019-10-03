@@ -1,6 +1,5 @@
 import json
 from driver import Driver
-from command import Command
 from statement import Statement
 
 
@@ -13,19 +12,12 @@ class Request(object):
         """
 
         self._driver = Driver()
-        self._command = Command(json.loads(data))
+        self._json = json.loads(data)
 
-    def send(self) -> str:
+    def execute(self) -> str:
         """Метод выполнениет запроса и возвращает json с результатом."""
         return json.dumps({'objects': self._execute_query()})
 
     def _execute_query(self) -> list:
-        result = []
-        self._driver.open()
-        with self._driver.session() as session:
-            for query in Statement(self._command).data:
-                records = session.run(query)
-                for record in records:
-                    result.append(dict(record[0]))
-        self._driver.close()
-        return result
+        return self._driver.execute_statement(Statement(self._json))
+

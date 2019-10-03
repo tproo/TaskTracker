@@ -78,10 +78,10 @@ class Server(object):
                         self._client_read(sock)
                     except KeyboardInterrupt:
                         do_listen = False
-                    except Exception as e:
-                        self._log.write(e)
-                        sock.send(str(e))
-                        continue
+#                    except Exception as e:
+#                        self._log.write(e)
+#                        self._send(sock, str(e))
+#                        continue
         self._socket.close()
         return 0
 
@@ -89,14 +89,14 @@ class Server(object):
         socket_, address_ = client_data
         self._sockets[socket_] = address_
         self._log.write("Client (%s, %s) connected" % (address_[0], address_[1]))
-        socket_.send(str.encode('connected'))
+        self._send(socket_, 'connected')
 
     def _client_read(self, socket_) -> None:
         data_ = socket_.recv(self._buffer_size)
         address_ = self._sockets[socket_]
         if data_:
             self._log.write("(%s:%s) sent:\n%s" % (address_[0], address_[1], data_))
-            socket_.send(str.encode(Request(data_).send()))
+            self._send(socket_, Request(data_).execute())
         else:
             self._client_disconnected(socket_)
 
@@ -105,3 +105,9 @@ class Server(object):
         socket_.close()
         del self._sockets[socket_]
         self._log.write("Client (%s, %s) disconnected" % (address_[0], address_[1]))
+
+    def _send(self, socket_, message):
+        data = bytes(message, 'utf-8')
+        data = len(data).to_bytes(4, byteorder='big') + data 
+        socket_.send(data)
+
